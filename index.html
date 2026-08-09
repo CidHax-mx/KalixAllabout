@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABOUT KALIX</title>
+    <!-- Tailwind CSS for layout and utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 1. Direct Web CDN Import for the real Aquire & Aquire Bold Font -->
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/aquire');
+    </style>
+
+    <!-- 2. Fallback Google Fonts for ultra-futuristic styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-glow: #10b981;
+            --secondary-glow: #34d399;
+            --bg-color: #030712;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            /* Applying Aquire globally, falling back to Orbitron */
+            font-family: 'Aquire', 'Orbitron', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Set system body copy to use a highly readable modern sans-serif */
+        .system-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Particle Canvas Background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at center, #022c22 0%, #030712 100%);
+        }
+
+        /* Title Glow Effect */
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch {
+            position: relative;
+            color: white;
+            font-size: 2.75rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Glassmorphism Card with Interactive Glow */
+        .glass-card {
+            background: rgba(3, 7, 18, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            box-shadow: 0 30px 60px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Typing animation cursor */
+        .typing-text::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: var(--primary-glow);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.6);
+        }
+        
+        /* Interactive mouse glow effect on card */
+        .mouse-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+        .glass-card:hover .mouse-glow {
+            opacity: 1;
+        }
+        
+        .content-z {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 md:p-12">
+
+    <!-- Interactive Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-5xl mx-auto glass-card p-8 sm:p-12 relative" id="main-card">
+        <div class="mouse-glow" id="glow-effect"></div>
+        
+        <div class="content-z flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+            
+            <!-- Left Column: Avatar & Quick Info -->
+            <div class="w-full lg:w-1/3 flex flex-col items-center text-center space-y-8">
+                <!-- Circular Avatar Frame (Permanently locked to your image with cool visual fallbacks) -->
+                <div class="relative w-48 h-48 group select-none">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[#10b981] to-[#34d399] rounded-full group-hover:scale-110 transition-all duration-700 opacity-30 blur-2xl animate-pulse"></div>
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[#10b981] to-[#34d399] rounded-full group-hover:rotate-180 transition-transform duration-1000 opacity-60"></div>
+                    <div class="absolute inset-[3px] bg-[#030712] rounded-full flex items-center justify-center overflow-hidden z-10">
+                        <!-- Locked Target Image -->
+                        <img id="avatar-img" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                             src="IMG_20260712_200103_001.jpg" 
+                             alt="About Kalix Avatar" 
+                             onerror="showFallbackAvatar()">
+                        
+                        <!-- Premium Custom Cyber-Anime Silhouette Fallback (Instead of empty or basic icon) -->
+                        <div id="avatar-fallback" class="hidden w-full h-full transition-transform duration-500 group-hover:scale-110 flex items-center justify-center bg-[#022c22]/20">
+                            <!-- High quality custom vector representing a cool cyber warrior portrait matching the aesthetic -->
+                            <svg class="w-full h-full text-emerald-500/80 p-4" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Background Circle Glow -->
+                                <circle cx="50" cy="50" r="45" fill="url(#avatar-grad)" opacity="0.15"/>
+                                <!-- Cyber HUD Details -->
+                                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="1" stroke-dasharray="4 8" opacity="0.4"/>
+                                <!-- Anime Silhouette Spike Hair -->
+                                <path d="M50 15C42 12 35 20 35 20C32 18 28 25 28 25C24 23 23 32 23 32C20 35 24 40 24 40C20 44 26 48 26 48C28 55 35 68 50 78C65 68 72 55 74 48C74 48 80 44 76 40C76 40 80 35 77 32C77 32 76 23 72 25C72 25 68 18 65 20C65 20 58 12 50 15Z" fill="#047857" opacity="0.3"/>
+                                <!-- Detailed Spiky Anime Hair Outline -->
+                                <path d="M50 16L45 28L38 22L37 32L29 27L32 38L25 36L30 46L34 44L36 55L42 46L46 58L50 49L54 58L58 46L64 55L66 44L70 46L75 36L68 38L71 27L63 32L62 22L55 28L50 16Z" fill="currentColor"/>
+                                <!-- Visor / Cybernetic Eyes -->
+                                <path d="M38 43H62L59 47H41L38 43Z" fill="#34d399" />
+                                <path d="M35 44.5L50 40L65 44.5L50 46L35 44.5Z" stroke="#10b981" stroke-width="1.5" opacity="0.8"/>
+                                <!-- Neck & Collar -->
+                                <path d="M44 58L42 70L50 75L58 70L56 58" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <!-- Shoulders -->
+                                <path d="M30 78C30 78 35 72 42 72H58C65 72 70 78 70 78" stroke="currentColor" stroke-width="2"/>
+                                <!-- Decorative Gradients -->
+                                <defs>
+                                    <radialGradient id="avatar-grad" cx="0.5" cy="0.5" r="0.5">
+                                        <stop offset="0%" stop-color="#10b981"/>
+                                        <stop offset="100%" stop-color="#030712"/>
+                                    </radialGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Badges (Improved layout so Dev Level does not cut off) -->
+                <div class="grid grid-cols-2 gap-3 w-full px-2">
+                    <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-xl py-2.5 px-3 text-left">
+                        <div class="text-[9px] tracking-[0.2em] text-emerald-500 uppercase font-bold">Status</div>
+                        <div class="text-[11px] sm:text-xs font-black text-white mt-0.5 uppercase tracking-wider truncate">Online</div>
+                    </div>
+                    
+                    <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-xl py-2.5 px-3 text-left">
+                        <div class="text-[9px] tracking-[0.2em] text-emerald-500 uppercase font-bold">Clan</div>
+                        <div class="text-[11px] sm:text-xs font-black text-white mt-0.5 uppercase tracking-wider truncate">Exploit Union | 𝗫𝗣𝗨</div>
+                    </div>
+
+                    <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-xl py-2.5 px-3 text-left">
+                        <div class="text-[9px] tracking-[0.2em] text-emerald-500 uppercase font-bold">Country</div>
+                        <div class="text-[11px] sm:text-xs font-black text-white mt-0.5 uppercase tracking-wider truncate">PH</div>
+                    </div>
+                    
+                    <!-- Modified Dev Level Card -->
+                    <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-xl py-2.5 px-3 text-left col-span-1">
+                        <div class="text-[9px] tracking-[0.2em] text-emerald-500 uppercase font-bold">Dev Level</div>
+                        <div class="text-[10px] sm:text-xs font-black text-[#34d399] mt-0.5 uppercase tracking-wider leading-none">NOT PRO / LEARNING</div>
+                    </div>
+                </div>
+
+                <!-- Single Telegram Interactive Copy Button -->
+                <div class="w-full px-2">
+                    <button onclick="copyTelegramHandle(event)"
+                       class="w-full py-3 bg-white/5 rounded-xl text-emerald-400 hover:bg-emerald-500/15 hover:text-white transition-all border border-emerald-500/10 hover:border-emerald-500/40 flex items-center justify-center gap-2 shadow-md shadow-emerald-500/5 hover:shadow-emerald-500/15 cursor-pointer"
+                       title="Click to copy handle">
+                        <!-- Clean Vector Telegram Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m22 2-7 20-4-9-9-4Z" />
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                        </svg>
+                        <span class="text-xs uppercase tracking-wider font-bold">@BetterKnowAsKalix</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Details & Bio -->
+            <div class="w-full lg:w-2/3 space-y-8 lg:pt-2">
+                
+                <header class="text-center lg:text-left">
+                    <div class="glitch-wrapper">
+                        <!-- THE TITLE IN FULL AQUIRE BOLD -->
+                        <h1 class="glitch text-3xl sm:text-4xl md:text-5xl" data-text="ABOUT KALIX">ABOUT KALIX</h1>
+                    </div>
+                    <div class="mt-3 text-lg sm:text-xl text-emerald-400 h-8 tracking-widest uppercase">
+                        <span id="typewriter" class="typing-text"></span>
+                    </div>
+                </header>
+
+                <!-- Clean, high-readability bio content -->
+                <div class="space-y-6 text-gray-300 system-text leading-relaxed text-base sm:text-lg">
+                    <p>
+                        Hi, I'm a developer who loves customizing games and designing clean user interfaces. I write software like custom game menus and injectors, often using frameworks like ImGui to build lightweight, smooth-running overlays.
+                    </p>
+                    <p>
+                        For me, the fun is in combining the technical side of coding with creative design so that the tools I build are simple, fast, and easy for anyone to use. I just really enjoy figuring out how software works behind the scenes and turning complex coding projects into clean, polished designs.
+                    </p>
+                </div>
+
+                <!-- Security Background Badge (Legit, trusted, no scam records) -->
+                <div class="p-5 bg-emerald-950/15 border border-emerald-500/20 rounded-2xl flex items-start gap-4 hover:border-emerald-500/40 transition-all duration-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+                    <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)] flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="space-y-1 text-left">
+                        <div class="text-xs font-black uppercase tracking-[0.25em] text-emerald-500">Security Background</div>
+                        <div class="text-sm sm:text-base font-black text-white uppercase tracking-wider">LEGIT AND TRUSTED</div>
+                        <p class="text-xs sm:text-sm text-gray-400 system-text font-semibold leading-relaxed">
+                            Verified clean profile. This user does not have any scam records.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Languages Grid with glowing percentages (Now summing exactly to 100%) -->
+                <div class="space-y-4">
+                    <h3 class="text-xs tracking-[0.35em] text-emerald-500 uppercase font-black border-b border-emerald-500/20 pb-2 inline-block">Programming Languages</h3>
+                    <div class="grid grid-cols-3 gap-4 max-w-md">
+                        <!-- Lua Card -->
+                        <div class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/30 p-4 rounded-xl text-center group transition-all duration-300 flex flex-col justify-between h-24">
+                            <div class="text-xs text-gray-500 group-hover:text-emerald-400 font-bold uppercase tracking-wider transition-colors">LUA</div>
+                            <div class="text-xl font-black text-white tracking-wider">100%</div>
+                            <!-- Neon Progress Bar -->
+                            <div class="w-full bg-emerald-950/40 rounded-full h-1 overflow-hidden mt-1">
+                                <div class="bg-gradient-to-r from-emerald-500 to-emerald-300 h-1 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.7)]" style="width: 55%"></div>
+                            </div>
+                        </div>
+                        <!-- C++ Card -->
+                        <div class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/30 p-4 rounded-xl text-center group transition-all duration-300 flex flex-col justify-between h-24">
+                            <div class="text-xs text-gray-500 group-hover:text-emerald-400 font-bold uppercase tracking-wider transition-colors">C++</div>
+                            <div class="text-xl font-black text-white tracking-wider">50%</div>
+                            <!-- Neon Progress Bar -->
+                            <div class="w-full bg-emerald-950/40 rounded-full h-1 overflow-hidden mt-1">
+                                <div class="bg-gradient-to-r from-emerald-500 to-emerald-300 h-1 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.7)]" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <!-- HTML Card -->
+                        <div class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/30 p-4 rounded-xl text-center group transition-all duration-300 flex flex-col justify-between h-24">
+                            <div class="text-xs text-gray-500 group-hover:text-emerald-400 font-bold uppercase tracking-wider transition-colors">HTML</div>
+                            <div class="text-xl font-black text-[#10b981] tracking-wider">60%</div>
+                            <!-- Neon Progress Bar -->
+                            <div class="w-full bg-emerald-950/40 rounded-full h-1 overflow-hidden mt-1">
+                                <div class="bg-gradient-to-r from-emerald-500 to-emerald-300 h-1 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.7)]" style="width: 15%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trusted Friends / Network Allies Section -->
+                <div class="space-y-4">
+                    <h3 class="text-xs tracking-[0.35em] text-emerald-500 uppercase font-black border-b border-emerald-500/20 pb-2 inline-block">Trusted Friends</h3>
+                    <div class="space-y-4 max-w-2xl">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                            <!-- Friend 1: x_princess (TZS OWNER) -->
+                            <a href="https://t.me/Gh0stH4x" target="_blank" rel="noopener noreferrer" 
+                               class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/40 p-4 rounded-xl group transition-all duration-300 flex items-center gap-3 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                                <div class="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-[#10b981] group-hover:text-black transition-all flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                    </svg>
+                                </div>
+                                <div class="text-left overflow-hidden">
+                                    <div class="text-[9px] text-gray-500 uppercase tracking-widest font-black truncate">FREIND</div>
+                                    <div class="text-xs font-black text-white group-hover:text-emerald-400 transition-colors truncate">@YetzukiwaiHax</div>
+                                </div>
+                            </a>
+
+                            <!-- Friend 2: CanKillYouForever (TZS FOUNDER) -->
+                            <a href="https://t.me/Kevpostie" target="_blank" rel="noopener noreferrer" 
+                               class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/40 p-4 rounded-xl group transition-all duration-300 flex items-center gap-3 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                                <div class="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-[#10b981] group-hover:text-black transition-all flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                    </svg>
+                                </div>
+                                <div class="text-left overflow-hidden">
+                                    <div class="text-[9px] text-gray-500 uppercase tracking-widest font-black truncate">FREIND 3</div>
+                                    <div class="text-xs font-black text-white group-hover:text-emerald-400 transition-colors truncate">@Sugharill_shi</div>
+                                </div>
+                            </a>
+
+                            <!-- Friend 3: JAYVEEHAXX (TZS MEMBER) -->
+                            <a href="https://t.me/Kevpostie" target="_blank" rel="noopener noreferrer" 
+                               class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/40 p-4 rounded-xl group transition-all duration-300 flex items-center gap-3 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                                <div class="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-[#10b981] group-hover:text-black transition-all flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                    </svg>
+                                </div>
+                                <div class="text-left overflow-hidden">
+                                    <div class="text-[9px] text-gray-500 uppercase tracking-widest font-black truncate">FREIND 2</div>
+                                    <div class="text-xs font-black text-white group-hover:text-emerald-400 transition-colors truncate">@Kevpostie</div>
+                                </div>
+                            </a>
+
+                            <!-- Friend 4: TZS_PROMOTER (KUPAL) -->
+                            <a href="https://t.me/VexHax" target="_blank" rel="noopener noreferrer" 
+                               class="bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/40 p-4 rounded-xl group transition-all duration-300 flex items-center gap-3 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                                <div class="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-[#10b981] group-hover:text-black transition-all flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                    </svg>
+                                </div>
+                                <div class="text-left overflow-hidden">
+                                    <div class="text-[9px] text-gray-500 uppercase tracking-widest font-black truncate">KUPAL</div>
+                                    <div class="text-xs font-black text-white group-hover:text-emerald-400 transition-colors truncate">@Vexhax</div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Dynamic indicator showing there are more team members -->
+                        <div class="text-center sm:text-left pt-1">
+                            <span class="text-xs text-emerald-500/60 font-bold uppercase tracking-[0.25em] italic select-none">and more friends..</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="pt-4 text-center lg:text-left space-y-3">
+                    <h3 class="text-xs tracking-[0.35em] text-emerald-500 uppercase font-black border-b border-emerald-500/20 pb-2 inline-block">For More Information</h3>
+                    <div>
+                        <a href="https://t.me/BetterKnowAsKalix" target="_blank" rel="noopener noreferrer" 
+                           class="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-bold rounded-xl group bg-gradient-to-br from-[#10b981] to-[#34d399] hover:text-white transition-all duration-300 focus:ring-4 focus:outline-none focus:ring-emerald-900 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25">
+                            <span class="relative px-8 py-4 transition-all ease-in duration-75 bg-[#030712] rounded-[10px] group-hover:bg-opacity-0 tracking-[0.2em] uppercase flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#10b981] group-hover:text-white transition-colors"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                Contact @BetterKnowAsKalix
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Glowing Toast Notification -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-[#030712]/95 border border-[#10b981]/40 text-white px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.25)] flex items-center gap-2 text-sm font-bold system-text">
+            <span class="text-[#10b981] text-lg">✓</span>
+            <span>Copied @BetterKnowAsKalix to clipboard</span>
+        </div>
+    </div>
+
+    <!-- Scripts for Interactions -->
+    <script>
+        // ==========================================
+        // CONFIGURATION AREA:
+        // Paste your public image link here if you don't want to upload the photo file next to the HTML file:
+        const PUBLIC_IMAGE_URL = ""; 
+        // ==========================================
+
+        const avatarImg = document.getElementById('avatar-img');
+        if (PUBLIC_IMAGE_URL && PUBLIC_IMAGE_URL.trim() !== "") {
+            avatarImg.src = PUBLIC_IMAGE_URL;
+        }
+
+        // Fallback loader if direct image file isn't found
+        function showFallbackAvatar() {
+            // If the user hasn't provided a custom public URL, show the cyber SVG avatar
+            if (!PUBLIC_IMAGE_URL) {
+                avatarImg.style.display = 'none';
+                document.getElementById('avatar-fallback').classList.remove('hidden');
+            }
+        }
+
+        // Telegram Handle Copy to Clipboard Action
+        function copyTelegramHandle(event) {
+            event.preventDefault();
+            const textToCopy = "@BetterKnowAsKalix";
+            
+            // Fallback selection range clipboard writing for sandboxed environments
+            const tempInput = document.createElement("input");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // Safe selector for mobile browsers
+            
+            try {
+                document.execCommand("copy");
+                showToast();
+            } catch (err) {
+                console.error("Failed to copy handle:", err);
+            }
+            
+            document.body.removeChild(tempInput);
+        }
+
+        // Elegant floating green toast notification popup
+        function showToast() {
+            const toast = document.getElementById('toast-notification');
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateY(20px)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // 1. Typewriter Effect
+        const phrases = [
+            "Cheat Developer",
+            "Software Developer",
+            "Creative Programmer",
+            "Tundra Z Member"
+        ];
+        let currentPhrase = 0;
+        let isDeleting = false;
+        let charIndex = 0;
+        const typewriterElement = document.getElementById('typewriter');
+        
+        function typeEffect() {
+            const currentText = phrases[currentPhrase];
+            
+            if (isDeleting) {
+                charIndex--;
+            } else {
+                charIndex++;
+            }
+            
+            typewriterElement.textContent = currentText.substring(0, charIndex);
+            
+            let typingSpeed = isDeleting ? 40 : 80;
+            
+            if (!isDeleting && charIndex === currentText.length) {
+                typingSpeed = 2200; // Pause at end of word
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                currentPhrase = (currentPhrase + 1) % phrases.length;
+                typingSpeed = 400; // Pause before typing new word
+            }
+            
+            setTimeout(typeEffect, typingSpeed);
+        }
+        
+        // Start typing effect
+        setTimeout(typeEffect, 1000);
+
+        // 2. Mouse tracking glow effect on the card
+        const card = document.getElementById('main-card');
+        const glow = document.getElementById('glow-effect');
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            glow.style.left = x + 'px';
+            glow.style.top = y + 'px';
+        });
+
+        // 3. Particle Background Canvas
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let particlesArray = [];
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() * 0.4) - 0.2;
+                this.speedY = (Math.random() * 0.4) - 0.2;
+                this.color = Math.random() > 0.4 ? '#10b981' : '#047857';
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.width * canvas.height) / 11000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                // Draw delicate connecting lines
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 110) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(16, 185, 129, ${Math.max(0, (110 - distance) / 110 * 0.15)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        init();
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+    </script>
+</body>
+</html>
